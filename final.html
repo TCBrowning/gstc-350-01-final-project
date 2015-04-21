@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples
+      on iOS devices-->
+    <meta name="viewport"
+          content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Create Map with Custom ArcGISDynamicMapServiceLayer Layer
+        Definitions</title>
+
+    <link rel="stylesheet"
+          href="http://js.arcgis.com/3.12/esri/css/esri.css"/>
+    <style>
+        html, body, #mapDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        footer{
+            position: absolute;
+            text-align: center;
+            top: 0;
+            width: 300px;
+            left: 35%;
+            background-color: black;
+        }
+
+        ul{
+            position: absolute;}
+
+    </style>
+
+    <script src="http://js.arcgis.com/3.12/"></script>
+    <script>
+        /*
+         Final Project Requirements:
+         1) A map using ArcGIS javascript API.
+         2) The map must point to at least one of your' own map services.
+         3) The map service should be pointed to a database.
+         4) The map should have some interactive feature in it (drawing or buttons to turn layer on/off, etc).
+         5) Be creative.
+         **/
+
+        var map;
+
+
+
+        require([
+                    "esri/map",
+                    "esri/layers/FeatureLayer",
+                    "esri/geometry/Point",
+                        "esri/symbols/SimpleMarkerSymbol",
+                        "esri/graphic",
+                        "esri/Color",
+                    "dojo/domReady!"
+                ],
+                function (Map, FeatureLayer, Point,SimpleMarkerSymbol, Graphic, Color) {
+
+                    map = new Map("mapDiv", {
+                        basemap: "hybrid",
+                        center: [-95.665, 37.6],
+                        zoom: 4,
+                        sliderPosition: "top-right"
+                    });
+
+                    // Create a new layer and add that layer to the map.
+                    var lyr = new FeatureLayer("http://stg.tsstools.com/arcgis/rest/services/hu/hu2/MapServer/0");
+                    map.addLayer(lyr);
+
+                    window.goToLatLon= function(lat, lon) {
+                        point = new Point(lon, lat);
+                        map.centerAndZoom(point, 17);
+                        var simpleMarkerSymbol = new SimpleMarkerSymbol();
+                        simpleMarkerSymbol.color= new Color([255, 0, 0]);
+
+                        var graphic = new Graphic(point, simpleMarkerSymbol);
+
+                        map.graphics.add(graphic);
+                    }
+                });
+    </script>
+    <script>
+        var timeout	= 500;
+        var closetimer	= 0;
+        var ddmenuitem	= 0;
+
+        // open hidden layer
+        function mopen(id)
+        {
+            // cancel close timer
+            mcancelclosetime();
+
+            // close old layer
+            if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+
+            // get new layer and show it
+            ddmenuitem = document.getElementById(id);
+            ddmenuitem.style.visibility = 'visible';
+
+        }
+        // close showed layer
+        function mclose()
+        {
+            if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+        }
+
+        // go close timer
+        function mclosetime()
+        {
+            closetimer = window.setTimeout(mclose, timeout);
+        }
+
+        // cancel close timer
+        function mcancelclosetime()
+        {
+            if(closetimer)
+            {
+                window.clearTimeout(closetimer);
+                closetimer = null;
+            }
+        }
+
+    </script>
+
+    <style>
+        #sddm
+        {	margin: 0;
+            padding: 0;
+            z-index: 30}
+
+        #sddm li
+        {	margin: 0;
+            padding: 0;
+            list-style: none;
+            float: left;
+            font: bold 11px arial}
+
+        #sddm li a
+        {	display: block;
+            margin: 0 1px 0 0;
+            padding: 4px 10px;
+            width: 60px;
+            background: #5970B2;
+            color: #FFF;
+            text-align: center;
+            text-decoration: none}
+
+        #sddm li a:hover
+        {	background: #49A3FF}
+
+        #sddm div
+        {	position: absolute;
+            visibility: hidden;
+            margin: 0;
+            padding: 0;
+            background: #EAEBD8;
+            border: 1px solid #5970B2}
+
+        #sddm div a
+        {	position: relative;
+            display: block;
+            margin: 0;
+            padding: 5px 10px;
+            width: auto;
+            white-space: nowrap;
+            text-align: left;
+            text-decoration: none;
+            background: #EAEBD8;
+            color: #2875DE;
+            font: 11px arial}
+
+        #sddm div a:hover
+        {	background: #49A3FF;
+            color: #FFF}
+    </style>
+
+</head>
+<body>
+<ul id="sddm">
+    <li><a href="#"
+           onmouseover="mopen('m1')"
+           onmouseout="mclosetime()">Regular Breweries</a>
+        <div id="m1"
+             onmouseover="mcancelclosetime()"
+             onmouseout="mclosetime()">
+            <a href="#" onclick="goToLatLon(38.597523,-90.211862)">Anheuser-Busch Inc.</a>
+            <a href="#" onclick="goToLatLon(43.043038,-87.964999)">Miller Brewing Company</a>
+            <a href="#" onclick="goToLatLon(40.682642,-76.197219)">D.G. Yuengling and Sons Inc.</a>
+            <a href="#" onclick="goToLatLon(43.164182,-77.614967)">Genesee Brewing Company</a>
+            <a href="#" onclick="goToLatLon(44.943138,-91.395640)">Jacob Leinenkugel Brewing Company</a>
+        </div>
+    </li>
+    
+    <li><a href="#"
+           onmouseover="mopen('m2')"
+           onmouseout="mclosetime()">Craft Breweries</a>
+        <div id="m2"
+             onmouseover="mcancelclosetime()"
+             onmouseout="mclosetime()">
+            <a href="#" onclick="goToLatLon(42.314504,-71.103063)">Boston Beer Company</a>
+            <a href="#" onclick="goToLatLon(40.593043,-105.068894)">New Belgium Brewing Company</a>
+            <a href="#" onclick="goToLatLon(38.770382,-75.310212)">Dogfish Head Craft Brewery</a>
+            <a href="#" onclick="goToLatLon(39.362790,-77.426757)">Flying Dog Brewery</a>
+            <a href="#" onclick="goToLatLon(40.005229,-75.693183)">Victory Brewing Company</a>
+        </div>
+    </li>
+
+</ul>
+<div style="clear:both"></div>
+
+
+<div id="mapDiv"> </div>
+<footer>
+
+
+
+
+</footer>
+</body>
+</html>
